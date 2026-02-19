@@ -2,103 +2,94 @@
 
 namespace app\models;
 
-class User extends \yii\base\BaseObject implements \yii\web\IdentityInterface
+use yii\base\Model;
+use yii\web\IdentityInterface;
+use Yii;
+
+class User extends Model implements IdentityInterface
 {
     public $id;
-    public $username;
-    public $password;
-    public $authKey;
-    public $accessToken;
+    public $name;
+    public $password_hash;
+    public $email;
 
+    // feste Test-User
     private static $users = [
-        '100' => [
-            'id' => '100',
-            'username' => 'admin',
-            'password' => 'admin',
-            'authKey' => 'test100key',
-            'accessToken' => '100-token',
+        1 => [
+            'id' => 1,
+            'name' => 'admin',
+            'password_hash' => 'admin',
+            'email' => 'admin@test.com',
         ],
-        '101' => [
-            'id' => '101',
-            'username' => 'demo',
-            'password' => 'demo',
-            'authKey' => 'test101key',
-            'accessToken' => '101-token',
+        2 => [
+            'id' => 2,
+            'name' => 'demo',
+            'password_hash' => 'demo',
+            'email' => 'demo@test.com',
         ],
     ];
 
-
-    /**
-     * {@inheritdoc}
-     */
-    public static function findIdentity($id)
+    public function rules()
     {
-        return isset(self::$users[$id]) ? new static(self::$users[$id]) : null;
+        return [
+            [['name', 'password_hash'], 'required'],
+            ['email', 'email'],
+        ];
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public static function findIdentityByAccessToken($token, $type = null)
-    {
-        foreach (self::$users as $user) {
-            if ($user['accessToken'] === $token) {
-                return new static($user);
-            }
-        }
-
-        return null;
-    }
-
-    /**
-     * Finds user by username
-     *
-     * @param string $username
-     * @return static|null
-     */
     public static function findByUsername($username)
     {
         foreach (self::$users as $user) {
-            if (strcasecmp($user['username'], $username) === 0) {
+            if ($user['name'] === $username) {
                 return new static($user);
             }
+        }
+
+        $sessionUser = Yii::$app->session->get('signupUser');
+        if ($sessionUser && $sessionUser['name'] === $username) {
+            return new static([
+                'id' => 3,
+                'name' => $sessionUser['name'],
+                'password_hash' => $sessionUser['password_hash'],
+                'email' => $sessionUser['email'],
+            ]);
         }
 
         return null;
     }
 
-    /**
-     * {@inheritdoc}
-     */
+    public function validatePassword($password)
+    {
+        return $this->password_hash === $password;
+    }
+
+    public static function findIdentity($id)
+    {
+        foreach (self::$users as $user) {
+            if ($user['id'] == $id) {
+                return new static($user);
+            }
+        }
+        return null;
+    }
+
+    public static function findIdentityByAccessToken($token, $type = null)
+    {
+        return null;
+    }
+
     public function getId()
     {
         return $this->id;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getAuthKey()
     {
-        return $this->authKey;
+        return '';
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function validateAuthKey($authKey)
     {
-        return $this->authKey === $authKey;
-    }
-
-    /**
-     * Validates password
-     *
-     * @param string $password password to validate
-     * @return bool if password provided is valid for current user
-     */
-    public function validatePassword($password)
-    {
-        return $this->password === $password;
+        return true;
     }
 }

@@ -53,7 +53,21 @@ class SiteController extends Controller
             ],
         ];
     }
+    public function actionSignup()
+    {
+        $model = new \app\models\User;
 
+        if ($model->load(Yii::$app->request->post()) && $model->signup()) {
+            Yii::$app->session->setFlash('success', 'Registrierung erfolgreich!');
+            return $this->goHome();
+        }
+
+        return $this->render('signup', [
+            'model' => $model,
+        ]);
+
+        return $this->redirect(['site/login']);
+    }
     /**
      * Displays homepage.
      *
@@ -61,6 +75,24 @@ class SiteController extends Controller
      */
     public function actionIndex()
     {
+        $model = new \app\models\LoginForm();
+        $signupModel = new \app\models\User(); // Das Model für das Registrierungs-Modal
+
+        // Prüfen, ob Daten vom Registrierungs-Formular kommen
+        if ($signupModel->load(Yii::$app->request->post())) {
+            if ($signupModel->save()) {
+                Yii::$app->session->setFlash('success', 'Registrierung erfolgreich!');
+                return $this->refresh();
+            } else {
+                // Zeigt Fehler im Log an, falls das Speichern trotz Validierung fehlschlägt
+                Yii::error($signupModel->errors);
+            }
+        }
+
+        return $this->render('index', [
+            'model' => $model,
+            'signupModel' => $signupModel, // Wir geben es an den View weiter
+        ]);
         return $this->render('index');
     }
 
