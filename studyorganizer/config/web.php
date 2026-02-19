@@ -16,6 +16,10 @@ $config = [
             // !!! insert a secret key in the following (if it is empty) - this is required by cookie validation
             'cookieValidationKey' => 'UL-blZo8Cy0vHdxjEvLKomQZeBMJuHEX',
         ],
+        'urlManager' => [
+            'enablePrettyUrl' => true,
+            'showScriptName' => false,
+        ],
         'cache' => [
             'class' => 'yii\caching\FileCache',
         ],
@@ -59,6 +63,13 @@ if (YII_ENV_DEV) {
     $config['bootstrap'][] = 'debug';
     $config['modules']['debug'] = [
         'class' => 'yii\debug\Module',
+        'allowedIPs' => ['*'],
+        'on beforeAction' => function ($event) {
+            // Prüfe, ob der User Gast ist ODER kein Admin ist
+            if (Yii::$app->user->isGuest || !Yii::$app->user->identity->isAdmin()) {
+                throw new \yii\web\ForbiddenHttpException('Zugriff verweigert.');
+            }
+        },
         // uncomment the following to add your IP if you are not connecting from localhost.
         //'allowedIPs' => ['127.0.0.1', '::1'],
     ];
@@ -66,6 +77,7 @@ if (YII_ENV_DEV) {
     $config['bootstrap'][] = 'gii';
     $config['modules']['gii'] = [
         'class' => 'yii\gii\Module',
+        'allowedIPs' => ['*'],
         // uncomment the following to add your IP if you are not connecting from localhost.
         //'allowedIPs' => ['127.0.0.1', '::1'],
     ];
