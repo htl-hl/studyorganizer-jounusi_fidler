@@ -1,0 +1,16 @@
+Testdaten:
+
+Admin
+- Benutzername: Admin
+- Passwort: admin123
+- Rolle: Administrator
+
+Testbenutzer
+- Benutzername: Saasmann
+- Passwort: 123456
+- Rolle: Normaler Benutzer
+
+Testlehrer
+- Benutzername: Saaslehrer
+- Passwort: passwort123
+- Rolle: Normaler Benutzer
