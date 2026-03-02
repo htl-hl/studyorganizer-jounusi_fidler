@@ -10,14 +10,12 @@ $this->title = 'StudyOrganizer';
 
     <div class="jumbotron text-center bg-transparent mt-5 mb-5">
         <h1 class="display-4">Congratulations!</h1>
-
         <p class="lead">You have successfully created your Yii-powered application.</p>
-
-        <p><a class="btn btn-lg btn-success" href="https://www.yiiframework.com">Get started with Yii</a></p>
+        <p><a class="btn btn-lg" style="background-color: #1E90FF; color: white;" href="https://www.yiiframework.com">Get started with Yii</a></p>
     </div>
 
     <div class="body-content">
-
+        <?php if (!Yii::$app->user->isGuest): ?>
             <?php if (Yii::$app->user->identity->isAdmin()): ?>
                 <!-- Admin Dashboard -->
                 <div class="alert alert-info mt-3">
@@ -45,6 +43,6 @@ $this->title = 'StudyOrganizer';
                     </div>
                 </div>
             <?php endif; ?>
-        </div>
-    <?php endif; ?>
+        <?php endif; ?>
+    </div>
 </div>
