@@ -7,20 +7,15 @@ use yii\helpers\Html;
 $this->title = 'StudyOrganizer';
 ?>
 <div class="site-index">
-    <?php if (Yii::$app->user->isGuest): ?>
-        <!-- Welcome Page für nicht eingeloggte User -->
-        <div class="d-flex align-items-center justify-content-center" style="min-height: 60vh;">
-            <div class="text-center">
-                <h1 class="display-3 fw-bold mb-4">Willkommen bei StudyOrganizer</h1>
-                <p class="lead mb-4">Organisiere deine Aufgaben und behalte den Überblick über dein Studium</p>
-                <?= Html::a('Get Started', ['site/login'], ['class' => 'btn btn-primary btn-lg px-5 py-3', 'style' => 'background-color: #1E90FF; border: none;']) ?>
-            </div>
-        </div>
-    <?php else: ?>
-        <!-- Dashboard für eingeloggte User -->
-        <div class="mt-4">
-            <h2>Willkommen, <?= Html::encode(Yii::$app->user->identity->Name) ?>!</h2>
 
+    <div class="jumbotron text-center bg-transparent mt-5 mb-5">
+        <h1 class="display-4">Congratulations!</h1>
+        <p class="lead">You have successfully created your Yii-powered application.</p>
+        <p><a class="btn btn-lg" style="background-color: #1E90FF; color: white;" href="https://www.yiiframework.com">Get started with Yii</a></p>
+    </div>
+
+    <div class="body-content">
+        <?php if (!Yii::$app->user->isGuest): ?>
             <?php if (Yii::$app->user->identity->isAdmin()): ?>
                 <!-- Admin Dashboard -->
                 <div class="alert alert-info mt-3">
@@ -48,6 +43,6 @@ $this->title = 'StudyOrganizer';
                     </div>
                 </div>
             <?php endif; ?>
-        </div>
-    <?php endif; ?>
+        <?php endif; ?>
+    </div>
 </div>
