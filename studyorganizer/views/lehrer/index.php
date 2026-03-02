@@ -29,12 +29,29 @@ $this->params['breadcrumbs'][] = $this->title;
         'columns' => [
             ['class' => 'yii\grid\SerialColumn'],
 
-            'LehrerID',
             'Name',
             'Email:email',
-            'IsActive',
+            [
+                'attribute' => 'IsActive',
+                'format' => 'html',
+                'value' => function($model) {
+                    return $model->IsActive ? '<span class="badge bg-success">Aktiv</span>' : '<span class="badge bg-danger">Inaktiv</span>';
+                }
+            ],
             [
                 'class' => ActionColumn::className(),
+                'template' => '{view} {update} {toggle-active}',
+                'buttons' => [
+                    'toggle-active' => function ($url, $model) {
+                        $label = $model->IsActive ? '<i class="bi bi-x-circle"></i>' : '<i class="bi bi-check-circle"></i>';
+                        $title = $model->IsActive ? 'Deaktivieren' : 'Aktivieren';
+                        return Html::a($label, ['toggle-active', 'LehrerID' => $model->LehrerID], [
+                            'title' => $title,
+                            'data-confirm' => "Möchtest du diesen Lehrer {$title}?",
+                            'data-method' => 'post',
+                        ]);
+                    },
+                ],
                 'urlCreator' => function ($action, Lehrer $model, $key, $index, $column) {
                     return Url::toRoute([$action, 'LehrerID' => $model->LehrerID]);
                  }

@@ -93,4 +93,42 @@ class Aufgabe extends \yii\db\ActiveRecord
         return new AufgabeQuery(get_called_class());
     }
 
+    /**
+     * Gibt die Farbe basierend auf dem Fälligkeitsdatum zurück
+     * - >= 2 Wochen => keine Farbe (standard)
+     * - < 2 Wochen, >= 1 Woche => blau
+     * - < 1 Woche => gelb
+     * - < 1 Tag => rot
+     */
+    public function getDueDateColor()
+    {
+        if ($this->Finished) {
+            return 'success'; // Grün für erledigte Aufgaben
+        }
+
+        $now = new \DateTime();
+        $dueDate = new \DateTime($this->DueDate);
+        $diff = $now->diff($dueDate);
+        $days = (int)$diff->format('%r%a'); // Mit Vorzeichen
+
+        if ($days < 1) {
+            return 'danger'; // Rot
+        } elseif ($days < 7) {
+            return 'warning'; // Gelb
+        } elseif ($days < 14) {
+            return 'primary'; // Blau
+        } else {
+            return ''; // Keine spezielle Farbe
+        }
+    }
+
+    /**
+     * Gibt den CSS-Klassen-String für Bootstrap zurück
+     */
+    public function getDueDateBadgeClass()
+    {
+        $color = $this->getDueDateColor();
+        return $color ? "badge bg-{$color}" : '';
+    }
+
 }
