@@ -43,7 +43,10 @@ class AufgabeSearch extends Aufgabe
     {
         $query = Aufgabe::find();
 
-        // add conditions that should always apply here
+        // Normale User sehen nur ihre eigenen Aufgaben, Admins sehen alles
+        if (!\Yii::$app->user->identity->isAdmin()) {
+            $query->andWhere(['UserID' => \Yii::$app->user->id]);
+        }
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,

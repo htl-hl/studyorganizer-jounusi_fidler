@@ -32,26 +32,43 @@
         <header id="header">
             <?php
             NavBar::begin([
-                    'brandLabel' => Yii::$app->name,
+                    'brandLabel' => Html::img('@web/Logo.png', ['alt' => 'StudyOrganizer Logo', 'style' => 'height: 40px;']),
                     'brandUrl' => Yii::$app->homeUrl,
                     'options' => ['class' => 'navbar-expand-md navbar-dark fixed-top', 'style' => 'background-color: #1E90FF;']
             ]);
+
+            // Fächer-Links für eingeloggte normale User
+            $fachItems = [];
+            if (!Yii::$app->user->isGuest && !Yii::$app->user->identity->isAdmin()) {
+                $faecher = \app\models\Fach::find()->all();
+                foreach ($faecher as $fach) {
+                    $fachItems[] = ['label' => $fach->Fachname, 'url' => ['/aufgabe/index', 'AufgabeSearch[FachID]' => $fach->FachID]];
+                }
+            }
+
             echo Nav::widget([
-                    'options' => ['class' => 'navbar-nav'],
+                    'options' => ['class' => 'navbar-nav me-auto'],
+                    'items' => $fachItems
+            ]);
+
+            // User Icon rechts
+            echo Nav::widget([
+                    'options' => ['class' => 'navbar-nav ms-auto'],
                     'items' => [
-                            ['label' => 'Home', 'url' => ['/site/index']],
-                            ['label' => 'About', 'url' => ['/site/about']],
-                            ['label' => 'Contact', 'url' => ['/site/contact']],
                             Yii::$app->user->isGuest
-                                    ? ['label' => 'Login', 'url' => ['/site/login']]
-                                    : '<li class="nav-item">'
-                                    . Html::beginForm(['/site/logout'])
-                                    . Html::submitButton(
-                                            'Logout (' . Yii::$app->user->identity->Name . ')',
-                                            ['class' => 'nav-link btn btn-link logout']
-                                    )
-                                    . Html::endForm()
-                                    . '</li>'
+                                    ? ['label' => '👤', 'url' => ['/site/login'], 'encode' => false, 'linkOptions' => ['style' => 'font-size: 24px;']]
+                                    : '<li class="nav-item dropdown">
+                                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" style="font-size: 24px;">
+                                            😊
+                                        </a>
+                                        <ul class="dropdown-menu dropdown-menu-end">
+                                            <li><span class="dropdown-item-text"><strong>' . Html::encode(Yii::$app->user->identity->Name) . '</strong></span></li>
+                                            <li><hr class="dropdown-divider"></li>
+                                            <li>' . Html::beginForm(['/site/logout'], 'post')
+                                                . Html::submitButton('Logout', ['class' => 'dropdown-item'])
+                                                . Html::endForm() . '</li>
+                                        </ul>
+                                    </li>'
                     ]
             ]);
             NavBar::end();

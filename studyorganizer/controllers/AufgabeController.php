@@ -21,6 +21,15 @@ class AufgabeController extends Controller
         return array_merge(
             parent::behaviors(),
             [
+                'access' => [
+                    'class' => \yii\filters\AccessControl::class,
+                    'rules' => [
+                        [
+                            'allow' => true,
+                            'roles' => ['@'], // Nur eingeloggte User
+                        ],
+                    ],
+                ],
                 'verbs' => [
                     'class' => VerbFilter::className(),
                     'actions' => [
@@ -68,6 +77,7 @@ class AufgabeController extends Controller
     public function actionCreate()
     {
         $model = new Aufgabe();
+        $model->UserID = \Yii::$app->user->id; // Automatisch den aktuellen User setzen
 
         if ($this->request->isPost) {
             if ($model->load($this->request->post()) && $model->save()) {
@@ -93,6 +103,12 @@ class AufgabeController extends Controller
     {
         $model = $this->findModel($AufgabeID);
 
+        // Verhindere Bearbeitung wenn Aufgabe erledigt ist
+        if ($model->Finished && !$this->request->isPost) {
+            \Yii::$app->session->setFlash('error', 'Erledigte Aufgaben können nicht mehr bearbeitet werden.');
+            return $this->redirect(['view', 'AufgabeID' => $model->AufgabeID]);
+        }
+
         if ($this->request->isPost && $model->load($this->request->post()) && $model->save()) {
             return $this->redirect(['view', 'AufgabeID' => $model->AufgabeID]);
         }
@@ -117,6 +133,19 @@ class AufgabeController extends Controller
     }
 
     /**
+     * Marks an Aufgabe as finished
+     */
+    public function actionFinish($AufgabeID)
+    {
+        $model = $this->findModel($AufgabeID);
+        $model->Finished = 1;
+        if ($model->save()) {
+            \Yii::$app->session->setFlash('success', 'Aufgabe als erledigt markiert.');
+        }
+        return $this->redirect(['view', 'AufgabeID' => $model->AufgabeID]);
+    }
+
+    /**
      * Finds the Aufgabe model based on its primary key value.
      * If the model is not found, a 404 HTTP exception will be thrown.
      * @param int $AufgabeID Aufgabe ID
@@ -125,10 +154,17 @@ class AufgabeController extends Controller
      */
     protected function findModel($AufgabeID)
     {
-        if (($model = Aufgabe::findOne(['AufgabeID' => $AufgabeID])) !== null) {
+        $conditions = ['AufgabeID' => $AufgabeID];
+
+        // Normale User dürfen nur ihre eigenen Aufgaben sehen
+        if (!\Yii::$app->user->identity->isAdmin()) {
+            $conditions['UserID'] = \Yii::$app->user->id;
+        }
+
+        if (($model = Aufgabe::findOne($conditions)) !== null) {
             return $model;
         }
 
-        throw new NotFoundHttpException(Yii::t('app', 'The requested page does not exist.'));
+        throw new NotFoundHttpException(\Yii::t('app', 'The requested page does not exist.'));
     }
 }
