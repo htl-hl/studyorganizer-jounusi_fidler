@@ -31,12 +31,13 @@ class Alert extends \yii\bootstrap5\Widget
      * - key: the name of the session flash variable
      * - value: the bootstrap alert type (i.e. danger, success, info, warning)
      */
-    public $alertTypes = [
-        'error'   => 'alert-danger',
-        'danger'  => 'alert-danger',
-        'success' => 'alert-success',
+
+    public $alertTypes = [ //alert info ist von bootstrap, macht die Farbe blau-türkis-lich
+        'error'   => 'alert-info',
+        'danger'  => 'alert-info',
+        'success' => 'alert-info',
         'info'    => 'alert-info',
-        'warning' => 'alert-warning'
+        'warning' => 'alert-info'
     ];
     /**
      * @var array the options for rendering the close button tag.
