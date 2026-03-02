@@ -2,75 +2,66 @@
 
 namespace app\models;
 
-use yii\base\Model;
-use yii\web\IdentityInterface;
 use Yii;
+use yii\db\ActiveRecord;
+use yii\web\IdentityInterface;
 
-class User extends Model implements IdentityInterface
+class User extends ActiveRecord implements IdentityInterface
 {
-    public $id;
-    public $name;
-    public $password_hash;
-    public $email;
+    public $password; // virtuelles Feld nur für Formulare
 
-    // feste Test-User
-    private static $users = [
-        1 => [
-            'id' => 1,
-            'name' => 'admin',
-            'password_hash' => 'admin',
-            'email' => 'admin@test.com',
-        ],
-        2 => [
-            'id' => 2,
-            'name' => 'demo',
-            'password_hash' => 'demo',
-            'email' => 'demo@test.com',
-        ],
-    ];
+    public static function tableName()
+    {
+        return 'User';
+    }
 
     public function rules()
     {
         return [
-            [['name', 'password_hash'], 'required'],
-            ['email', 'email'],
+            [['Name', 'Email', 'password'], 'required', 'on' => 'signup'],
+            [['Name', 'Email'], 'required'],
+            ['Email', 'email'],
+            ['Email', 'unique'],
+            [['Name', 'Email'], 'string', 'max' => 100],
+            ['password', 'string', 'min' => 6],
         ];
     }
 
-    public static function findByUsername($username)
+    public function attributeLabels()
     {
-        foreach (self::$users as $user) {
-            if ($user['name'] === $username) {
-                return new static($user);
-            }
-        }
+        return [
+            'UserID'   => 'ID',
+            'Name'     => 'Benutzername',
+            'Email'    => 'E-Mail',
+            'password' => 'Passwort',
+            'IsAdmin'  => 'Admin',
+        ];
+    }
 
-        $sessionUser = Yii::$app->session->get('signupUser');
-        if ($sessionUser && $sessionUser['name'] === $username) {
-            return new static([
-                'id' => 3,
-                'name' => $sessionUser['name'],
-                'password_hash' => $sessionUser['password_hash'],
-                'email' => $sessionUser['email'],
-            ]);
+    public function signup()
+    {
+        $this->scenario = 'signup';
+        if (!$this->validate()) {
+            return false;
         }
-
-        return null;
+        $this->PasswordHash = Yii::$app->security->generatePasswordHash($this->password);
+        $this->IsAdmin = 0;
+        return $this->save(false);
     }
 
     public function validatePassword($password)
     {
-        return $this->password_hash === $password;
+        return Yii::$app->security->validatePassword($password, $this->PasswordHash);
+    }
+
+    public function isAdmin()
+    {
+        return (bool) $this->IsAdmin;
     }
 
     public static function findIdentity($id)
     {
-        foreach (self::$users as $user) {
-            if ($user['id'] == $id) {
-                return new static($user);
-            }
-        }
-        return null;
+        return static::findOne(['UserID' => $id]);
     }
 
     public static function findIdentityByAccessToken($token, $type = null)
@@ -78,18 +69,28 @@ class User extends Model implements IdentityInterface
         return null;
     }
 
+    public static function findByUsername($username)
+    {
+        return static::findOne(['Name' => $username]);
+    }
+
     public function getId()
     {
-        return $this->id;
+        return $this->UserID;
     }
 
     public function getAuthKey()
     {
-        return '';
+        return $this->PasswordHash;
     }
 
     public function validateAuthKey($authKey)
     {
-        return true;
+        return $this->PasswordHash === $authKey;
+    }
+
+    public static function find()
+    {
+        return new UserQuery(get_called_class());
     }
 }
