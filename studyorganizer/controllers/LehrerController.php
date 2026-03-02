@@ -21,10 +21,23 @@ class LehrerController extends Controller
         return array_merge(
             parent::behaviors(),
             [
+                'access' => [
+                    'class' => \yii\filters\AccessControl::class,
+                    'rules' => [
+                        [
+                            'allow' => true,
+                            'roles' => ['@'],
+                            'matchCallback' => function ($rule, $action) {
+                                return \Yii::$app->user->identity->isAdmin(); // Nur Admins dürfen Lehrer verwalten
+                            }
+                        ],
+                    ],
+                ],
                 'verbs' => [
                     'class' => VerbFilter::className(),
                     'actions' => [
                         'delete' => ['POST'],
+                        'toggle-active' => ['POST'],
                     ],
                 ],
             ]
@@ -111,7 +124,26 @@ class LehrerController extends Controller
      */
     public function actionDelete($LehrerID)
     {
-        $this->findModel($LehrerID)->delete();
+        // Lehrer können nicht gelöscht werden, nur deaktiviert
+        \Yii::$app->session->setFlash('error', 'Lehrer können nicht gelöscht werden. Bitte setze sie auf Inaktiv.');
+        return $this->redirect(['index']);
+    }
+
+    /**
+     * Toggles the IsActive status of a Lehrer
+     * @param int $LehrerID Lehrer ID
+     * @return \yii\web\Response
+     * @throws NotFoundHttpException if the model cannot be found
+     */
+    public function actionToggleActive($LehrerID)
+    {
+        $model = $this->findModel($LehrerID);
+        $model->IsActive = !$model->IsActive;
+
+        if ($model->save()) {
+            $status = $model->IsActive ? 'aktiviert' : 'deaktiviert';
+            \Yii::$app->session->setFlash('success', "Lehrer wurde erfolgreich {$status}.");
+        }
 
         return $this->redirect(['index']);
     }
