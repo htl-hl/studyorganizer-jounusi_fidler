@@ -10,16 +10,18 @@ use yii\grid\GridView;
 /** @var app\models\FachSearch $searchModel */
 /** @var yii\data\ActiveDataProvider $dataProvider */
 
-$this->title = Yii::t('app', 'Faches');
+$this->title = 'Fächer verwalten';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
-<div class="fach-index">
+<div class="fach-index mt-4">
 
-    <h1><?= Html::encode($this->title) ?></h1>
-
-    <p>
-        <?= Html::a(Yii::t('app', 'Create Fach'), ['create'], ['class' => 'btn btn-success']) ?>
-    </p>
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1><i class="bi bi-bookmarks" style="color: #1E90FF;"></i> <?= Html::encode($this->title) ?></h1>
+        <?= Html::a('<i class="bi bi-plus-circle"></i> Neues Fach', ['create'], [
+            'class' => 'btn btn-lg',
+            'style' => 'background-color: #1E90FF; color: white;'
+        ]) ?>
+    </div>
 
     <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
 

@@ -8,11 +8,13 @@ $this->title = 'StudyOrganizer';
 ?>
 <div class="site-index">
 
-    <div class="jumbotron text-center bg-transparent mt-5 mb-5">
-        <h1 class="display-4">Congratulations!</h1>
-        <p class="lead">You have successfully created your Yii-powered application.</p>
-        <p><a class="btn btn-lg" style="background-color: #1E90FF; color: white;" href="https://www.yiiframework.com">Get started with Yii</a></p>
-    </div>
+    <?php if (Yii::$app->user->isGuest): ?>
+        <div class="jumbotron text-center bg-transparent mt-5 mb-5">
+            <h1 class="display-4">Willkommen bei StudyOrganizer!</h1>
+            <p class="lead">Organisiere deine Aufgaben und Fächer effizient.</p>
+            <p><?= Html::a('Jetzt starten', ['/site/login'], ['class' => 'btn btn-lg', 'style' => 'background-color: #1E90FF; color: white;']) ?></p>
+        </div>
+    <?php endif; ?>
 
     <div class="body-content">
         <?php if (!Yii::$app->user->isGuest): ?>

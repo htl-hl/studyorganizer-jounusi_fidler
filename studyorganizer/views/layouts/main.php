@@ -32,9 +32,9 @@ $this->registerLinkTag(['rel' => 'icon', 'type' => 'image/x-icon', 'href' => Yii
     <header id="header">
         <?php
         NavBar::begin([
-                'brandLabel' => Yii::$app->name,
+                'brandLabel' => '<img src="' . Yii::$app->request->baseUrl . '/logo.png" alt="StudyOrganizer" style="height: 35px; margin-right: 8px; vertical-align: middle;"> ' . Yii::$app->name,
                 'brandUrl' => Yii::$app->homeUrl,
-                'options' => ['class' => 'navbar-expand-md navbar-dark fixed-top', 'style' => 'background-color: #1E90FF;']
+                'options' => ['class' => 'navbar-expand-md navbar-dark fixed-top', 'style' => 'background-color: #1E90FF;'],
         ]);
         echo Nav::widget([
                 'options' => ['class' => 'navbar-nav'],
