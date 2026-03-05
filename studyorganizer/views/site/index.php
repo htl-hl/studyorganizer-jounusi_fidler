@@ -9,6 +9,7 @@ $this->title = 'StudyOrganizer';
 <div class="site-index">
 
     <?php if (Yii::$app->user->isGuest): ?>
+        <?php // Wenn nicht eingeloggt: Willkommensseite (von Jounusi) ?>
         <div class="jumbotron text-center bg-transparent mt-5 mb-5">
             <h1 class="display-4">Willkommen bei StudyOrganizer!</h1>
             <p class="lead">Organisiere deine Aufgaben und Fächer effizient.</p>

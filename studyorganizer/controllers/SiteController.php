@@ -17,10 +17,10 @@ class SiteController extends Controller
         return [
             'access' => [
                 'class' => AccessControl::class,
-                'only' => ['logout'],
+                'only' => ['logout', 'delete-account'],
                 'rules' => [
                     [
-                        'actions' => ['logout'],
+                        'actions' => ['logout', 'delete-account'],
                         'allow' => true,
                         'roles' => ['@'],
                     ],
@@ -30,6 +30,7 @@ class SiteController extends Controller
                 'class' => VerbFilter::class,
                 'actions' => [
                     'logout' => ['post'],
+                    'delete-account' => ['post'],
                 ],
             ],
         ];
@@ -87,6 +88,17 @@ class SiteController extends Controller
     {
         Yii::$app->user->logout();
         return $this->goHome();
+    }
+
+    public function actionDeleteAccount()
+    {
+        $user = \app\models\User::findOne(Yii::$app->user->id);
+        if ($user) {
+            Yii::$app->user->logout();
+            $user->delete();
+            Yii::$app->session->setFlash('success', 'Dein Konto wurde erfolgreich gelöscht.');
+        }
+        return $this->redirect(['site/login']);
     }
 
     public function actionContact()
