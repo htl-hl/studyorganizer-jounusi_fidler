@@ -8,14 +8,8 @@ use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 
-/**
- * AufgabeController implements the CRUD actions for Aufgabe model.
- */
 class AufgabeController extends Controller
 {
-    /**
-     * @inheritDoc
-     */
     public function behaviors()
     {
         return array_merge(
@@ -40,11 +34,6 @@ class AufgabeController extends Controller
         );
     }
 
-    /**
-     * Lists all Aufgabe models.
-     *
-     * @return string
-     */
     public function actionIndex()
     {
         $searchModel = new AufgabeSearch();
@@ -56,12 +45,6 @@ class AufgabeController extends Controller
         ]);
     }
 
-    /**
-     * Displays a single Aufgabe model.
-     * @param int $AufgabeID Aufgabe ID
-     * @return string
-     * @throws NotFoundHttpException if the model cannot be found
-     */
     public function actionView($AufgabeID)
     {
         return $this->render('view', [
@@ -69,11 +52,6 @@ class AufgabeController extends Controller
         ]);
     }
 
-    /**
-     * Creates a new Aufgabe model.
-     * If creation is successful, the browser will be redirected to the 'view' page.
-     * @return string|\yii\web\Response
-     */
     public function actionCreate()
     {
         $model = new Aufgabe();
@@ -92,13 +70,6 @@ class AufgabeController extends Controller
         ]);
     }
 
-    /**
-     * Updates an existing Aufgabe model.
-     * If update is successful, the browser will be redirected to the 'view' page.
-     * @param int $AufgabeID Aufgabe ID
-     * @return string|\yii\web\Response
-     * @throws NotFoundHttpException if the model cannot be found
-     */
     public function actionUpdate($AufgabeID)
     {
         $model = $this->findModel($AufgabeID);
@@ -118,13 +89,6 @@ class AufgabeController extends Controller
         ]);
     }
 
-    /**
-     * Deletes an existing Aufgabe model.
-     * If deletion is successful, the browser will be redirected to the 'index' page.
-     * @param int $AufgabeID Aufgabe ID
-     * @return \yii\web\Response
-     * @throws NotFoundHttpException if the model cannot be found
-     */
     public function actionDelete($AufgabeID)
     {
         $this->findModel($AufgabeID)->delete();
@@ -132,9 +96,6 @@ class AufgabeController extends Controller
         return $this->redirect(['index']);
     }
 
-    /**
-     * Marks an Aufgabe as finished
-     */
     public function actionFinish($AufgabeID)
     {
         $model = $this->findModel($AufgabeID);
@@ -145,13 +106,6 @@ class AufgabeController extends Controller
         return $this->redirect(['view', 'AufgabeID' => $model->AufgabeID]);
     }
 
-    /**
-     * Finds the Aufgabe model based on its primary key value.
-     * If the model is not found, a 404 HTTP exception will be thrown.
-     * @param int $AufgabeID Aufgabe ID
-     * @return Aufgabe the loaded model
-     * @throws NotFoundHttpException if the model cannot be found
-     */
     protected function findModel($AufgabeID)
     {
         $conditions = ['AufgabeID' => $AufgabeID];
