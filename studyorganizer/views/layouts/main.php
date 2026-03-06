@@ -17,7 +17,7 @@ $this->registerMetaTag(['charset' => Yii::$app->charset], 'charset');
 $this->registerMetaTag(['name' => 'viewport', 'content' => 'width=device-width, initial-scale=1, shrink-to-fit=no']);
 $this->registerMetaTag(['name' => 'description', 'content' => $this->params['meta_description'] ?? '']);
 $this->registerMetaTag(['name' => 'keywords', 'content' => $this->params['meta_keywords'] ?? '']);
-$this->registerLinkTag(['rel' => 'icon', 'type' => 'image/x-icon', 'href' => Yii::getAlias('@web/favicon.ico')]);
+$this->registerLinkTag(['rel' => 'icon', 'type' => 'image/png', 'href' => Yii::getAlias('@web/logo.png')]);
 ?>
 <?php $this->beginPage() ?>
     <!DOCTYPE html>
@@ -33,12 +33,37 @@ $this->registerLinkTag(['rel' => 'icon', 'type' => 'image/x-icon', 'href' => Yii
         #main-nav .nav-link, #main-nav .navbar-brand, #main-nav .btn-link { color: white !important; }
         #main-nav .dropdown-menu .dropdown-item { color: #333; }
         #main-nav .dropdown-menu .dropdown-item:hover { background-color: #f0f0f0; }
+
+        body {
+            background-image: url('<?= Yii::getAlias('@web') ?>/logo.png');
+            background-repeat: no-repeat;
+            background-position: center center;
+            background-attachment: fixed;
+            background-size: 40%;
+            opacity: 1;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('<?= Yii::getAlias('@web') ?>/logo.png');
+            background-repeat: no-repeat;
+            background-position: center center;
+            background-size: 40%;
+            opacity: 0.05;
+            z-index: -1;
+            pointer-events: none;
+        }
     </style>
 
     <header id="header">
         <?php
         NavBar::begin([
-                'brandLabel' => Yii::$app->name,
+                'brandLabel' => '<img src="' . Yii::getAlias('@web') . '/logo.png" alt="' . Yii::$app->name . '" style="height: 40px;">',
                 'brandUrl' => Yii::$app->homeUrl,
                 'options' => ['class' => 'navbar-expand-md navbar-dark fixed-top', 'style' => 'background-color: #1E90FF;', 'id' => 'main-nav']
         ]);
