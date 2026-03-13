@@ -86,14 +86,11 @@ $this->registerLinkTag(['rel' => 'icon', 'type' => 'image/png', 'href' => Yii::g
             ?>
             <ul class="navbar-nav ms-auto">
                 <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" role="button"
+                    <a class="nav-link dropdown-toggle" href="#" role="button"
                        data-bs-toggle="dropdown" aria-expanded="false">
-                        <span style="display:inline-flex;align-items:center;justify-content:center;width:32px;height:32px;border-radius:50%;background:white;color:#1E90FF;font-weight:bold;font-size:14px;margin-right:6px;"><?= $initial ?></span>
                         <?= $userName ?>
                     </a>
                     <ul class="dropdown-menu dropdown-menu-end">
-                        <?php // Profilbild ändern – Platzhalter, wird später implementiert ?>
-                        <li><a class="dropdown-item" href="#">&#128247; Profilbild ändern</a></li>
                         <?php // Sprache ändern – Platzhalter, wird später implementiert ?>
                         <li><a class="dropdown-item" href="#">&#127988; Sprache ändern</a></li>
                         <li><hr class="dropdown-divider"></li>
