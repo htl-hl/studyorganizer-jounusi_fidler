@@ -84,27 +84,38 @@ $this->registerLinkTag(['rel' => 'icon', 'type' => 'image/png', 'href' => Yii::g
             // Profilbild Platzhalter: Kreis mit Initiale des Usernamens
             $initial = strtoupper(substr($userName, 0, 1));
             ?>
-            <ul class="navbar-nav ms-auto">
-                <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" role="button"
-                       data-bs-toggle="dropdown" aria-expanded="false">
-                        <?= $userName ?>
-                    </a>
-                    <ul class="dropdown-menu dropdown-menu-end">
-                        <?php // Sprache ändern – Platzhalter, wird später implementiert ?>
-                        <li><a class="dropdown-item" href="#">&#127988; Sprache ändern</a></li>
-                        <li><hr class="dropdown-divider"></li>
-                        <li>
-                            <?= Html::beginForm(['/site/logout'], 'post') ?>
-                            <?= Html::submitButton('&#128682; Logout', ['class' => 'dropdown-item border-0 bg-transparent w-100 text-start']) ?>
-                            <?= Html::endForm() ?>
-                        </li>
-                        <li><hr class="dropdown-divider"></li>
-                        <li><a class="dropdown-item text-danger" href="#" data-bs-toggle="modal"
-                               data-bs-target="#deleteAccountModal">&#128465; Account löschen</a></li>
-                    </ul>
-                </li>
-            </ul>
+            <div class="dropdown profile-dropdown ms-auto" data-bs-auto-close="outside"> <?php // data-bs-auto-close="outside" = Dropdown schließt sich nur beim Klick außerhalb ?>
+                <?= Html::button(
+                        $userName,
+                        [
+                                'class' => 'nav-link dropdown-toggle',
+                                'data-bs-toggle' => 'dropdown',
+                                'aria-expanded' => 'false',
+                                'style' => 'background:none; border:none;'
+                        ]
+                ) ?>
+                <ul class="dropdown-menu dropdown-menu-end">
+                    <?php // Sprache-Slider: England links, Slider Mitte, Deutschland rechts ?>
+                    <li>
+                        <div class="dropdown-item d-flex align-items-center gap-2" onclick="event.stopPropagation();"> <?php // onclick stopPropagation = Klick schließt Dropdown nicht ?>
+                            <img src="https://flagcdn.com/w20/gb.png" alt="EN" style="height:16px;" id="flagEN"> <?php // England Flagge von flagcdn.com ?>
+                            <div class="form-check form-switch d-inline-block mb-0">
+                                <input class="form-check-input" type="checkbox" id="languageSwitch" <?= Yii::$app->language == 'de' ? 'checked' : '' ?>> <?php //checked speichert den sliderstatus ?>
+                            </div>
+                            <img src="https://flagcdn.com/w20/de.png" alt="DE" style="height:16px;" id="flagDE"> <?php // Deutschland Flagge von flagcdn.com ?>
+                        </div>
+                    </li>
+                    <li><hr class="dropdown-divider"></li>
+                    <li>
+                        <?= Html::beginForm(['/site/logout'], 'post') ?>
+                        <?= Html::submitButton('&#128682; Logout', ['class' => 'dropdown-item border-0 bg-transparent w-100 text-start']) ?>
+                        <?= Html::endForm() ?>
+                    </li>
+                    <li><hr class="dropdown-divider"></li>
+                    <li><a class="dropdown-item text-danger" href="#" data-bs-toggle="modal"
+                           data-bs-target="#deleteAccountModal">&#128465; <?= Yii::t('app', 'Delete account') ?></a></li>
+                </ul>
+            </div>
             <?php
         } else {
             // Nicht eingeloggt: Login rechts
@@ -126,7 +137,7 @@ $this->registerLinkTag(['rel' => 'icon', 'type' => 'image/png', 'href' => Yii::g
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title text-danger" id="deleteModalLabel">&#9888; Account löschen</h5>
+                        <h5 class="modal-title text-danger" id="deleteModalLabel">&#9888; <?= Yii::t('app', 'Delete account') ?></h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
@@ -163,10 +174,10 @@ $this->registerLinkTag(['rel' => 'icon', 'type' => 'image/png', 'href' => Yii::g
             <div class="row">
                 <div class="col-md-4 mb-3">
                     <h5 class="fw-bold">StudyOrganizer</h5>
-                    <p class="text-white small">Dein persönlicher Aufgaben- und Lernplaner.</p>
+                    <p class="text-white small"><?= Yii::t('app', 'Your personal task and learning planner.') ?></p>
                 </div>
                 <div class="col-md-4 mb-3">
-                    <h6 class="fw-bold">Kontakt</h6>
+                    <h6 class="fw-bold"><?= Yii::t('app', 'Contact') ?></h6>
                     <?php // Die Symbole habe ich ergoogelt, das war nicht der Chattler https://www.compart.com/de/unicode/U+2709 ?>
                     <p class="text-white small mb-1">&#128231; info@studyorganizer.at</p>
                     <p class="text-white small mb-1">&#128222; +43 123 456 789</p>
@@ -178,6 +189,41 @@ $this->registerLinkTag(['rel' => 'icon', 'type' => 'image/png', 'href' => Yii::g
             </div>
         </div>
     </footer>
+
+    <?php $this->registerJs(" // aus ITP Projekt kopiert
+        function updateLangVisual(isDE) {
+            var flagDE = document.getElementById('flagDE');
+            var flagEN = document.getElementById('flagEN');
+            if (!flagDE || !flagEN) return;
+            if (isDE) {
+                flagDE.classList.add('active');
+                flagEN.classList.remove('active');
+            } else {
+                flagDE.classList.remove('active');
+                flagEN.classList.add('active');
+            }
+        }
+
+        var langSwitch = document.getElementById('languageSwitch');
+        if (langSwitch) {
+            updateLangVisual(langSwitch.checked);
+            langSwitch.addEventListener('change', function(e) {
+                e.stopPropagation();
+                var lang = this.checked ? 'de' : 'en';
+                updateLangVisual(this.checked);
+                 var url = window.location.href.split('?')[0] + '?langChanged=1&lang=' + lang; // Sprache und langChanged direkt in URL
+                window.location.href = url; 
+            });
+        }
+
+        // Nach Reload: Dropdown wieder öffnen wenn Sprache gerade gewechselt wurde
+        if (window.location.search.indexOf('langChanged=1') !== -1) {
+            var toggleBtn = document.querySelector('.profile-dropdown .dropdown-toggle');
+            if (toggleBtn) {
+                new bootstrap.Dropdown(toggleBtn).show();
+            }
+        }
+    "); ?>
 
     <?php $this->endBody() ?>
     </body>

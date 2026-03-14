@@ -6,12 +6,17 @@ $db = require __DIR__ . '/db.php';
 $config = [
     'id' => 'basic',
     'basePath' => dirname(__DIR__),
+    'language' => 'en',
     'bootstrap' => ['log'],
     'on beforeRequest' => function ($event) { //bei jedem "Seitenwechsel" oder "Neuladung" passiert:
-        $session = Yii::$app->session; // Session-Objekt holen
+        $session = Yii::$app->session;
         $session->open();
-        if ($session->has('language')) { // beim ersten Aufrufen Englisch, erst nach Betätigung des Slidiers speichert er was, das passt aber
-            Yii::$app->language = $session->get('language'); // nachdem weiß er ob messages/de/app.php oder messages/en/app.php
+        $lang = Yii::$app->request->get('lang');
+        if ($lang && in_array($lang, ['de', 'en'])) { //speichert die Sprache wenns in der url ist
+            $session->set('language', $lang);
+            Yii::$app->language = $lang;
+        } elseif ($session->has('language')) { // sonst aus Session laden
+            Yii::$app->language = $session->get('language');
         }
     },
     'aliases' => [

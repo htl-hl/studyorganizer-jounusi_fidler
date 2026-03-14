@@ -17,10 +17,10 @@ class SiteController extends Controller
         return [
             'access' => [
                 'class' => AccessControl::class,
-                'only' => ['logout', 'delete-account'],
+                'only' => ['logout', 'delete-account','set-language'],
                 'rules' => [
                     [
-                        'actions' => ['logout', 'delete-account'],
+                        'actions' => ['logout', 'delete-account', 'set-language'],
                         'allow' => true,
                         'roles' => ['@'],
                     ],
@@ -116,5 +116,13 @@ class SiteController extends Controller
     public function actionAbout()
     {
         return $this->render('about');
+    }
+    public function actionSetLanguage($lang)
+    {
+        if (in_array($lang, ['de', 'en'])) { // wenn man afghanisch oder sowas wählt gehts nicht
+            Yii::$app->session->set('language', $lang); // gewählte Sprache in Session speichern
+            Yii::$app->language = $lang; // Sprache sofort für diesen Request setzen
+        }
+        return $this->redirect(Yii::$app->request->referrer ?: Yii::$app->homeUrl); // zurück zur vorherigen Seite
     }
 }
