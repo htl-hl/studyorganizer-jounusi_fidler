@@ -16,8 +16,13 @@ $faecher = ArrayHelper::map(Fach::find()->all(), 'FachID', 'Fachname');
 <div class="aufgabe-form">
 
     <?php $form = ActiveForm::begin([
-            'options' => ['class' => 'p-4 border rounded shadow-sm bg-light']
+            'options' => ['class' => 'p-4 border rounded shadow-sm bg-white']
     ]); ?>
+
+    <div class="text-center mb-4">
+        <h1 class="display-5"><i class="bi bi-plus-circle" style="color: #1E90FF;"></i> Neue Aufgabe erstellen</h1>
+        <p class="text-muted">Füge eine neue Aufgabe zu deinem Lernplan hinzu</p>
+    </div>
 
     <?= $form->field($model, 'Titel')->textInput([
             'maxlength' => true,

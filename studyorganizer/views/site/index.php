@@ -42,7 +42,7 @@ $this->title = 'StudyOrganizer';
                         <?= Html::a('<h4>Meine Aufgaben</h4><p>Aufgaben anzeigen und bearbeiten</p>', ['aufgabe/index'], ['class' => 'btn btn-outline-primary w-100 p-4 text-start']) ?>
                     </div>
                     <div class="col-md-6 mb-3">
-                        <?= Html::a('<h4>Neue Aufgabe</h4><p>Neue Aufgabe erstellen</p>', ['aufgabe/create'], ['class' => 'btn btn-primary w-100 p-4 text-start', 'style' => 'background-color: #1E90FF; border: none;']) ?>
+                        <?= Html::a('<h4>Neue Aufgabe</h4><p>Neue Aufgabe erstellen</p>', ['aufgabe/create'], ['class' => 'btn btn-outline-primary w-100 p-4 text-start']) ?>
                     </div>
                 </div>
             <?php endif; ?>
