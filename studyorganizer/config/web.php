@@ -7,6 +7,13 @@ $config = [
     'id' => 'basic',
     'basePath' => dirname(__DIR__),
     'bootstrap' => ['log'],
+    'on beforeRequest' => function ($event) { //bei jedem "Seitenwechsel" oder "Neuladung" passiert:
+        $session = Yii::$app->session; // Session-Objekt holen
+        $session->open();
+        if ($session->has('language')) { // beim ersten Aufrufen Englisch, erst nach Betätigung des Slidiers speichert er was, das passt aber
+            Yii::$app->language = $session->get('language'); // nachdem weiß er ob messages/de/app.php oder messages/en/app.php
+        }
+    },
     'aliases' => [
         '@bower' => '@vendor/bower-asset',
         '@npm'   => '@vendor/npm-asset',
@@ -46,6 +53,16 @@ $config = [
             ],
         ],
         'db' => $db,
+
+        'i18n' => [ // der Block macht Übersetzungen, genauso wie Yii::t
+            'translations' => [
+                'app*' => [
+                    'class' => 'yii\i18n\PhpMessageSource',
+                    'basePath' => '@app/messages', // Ordner: studyorganizer/messages/ de oder eng
+                    'sourceLanguage' => 'en', // Standard, das passt so
+                ],
+            ],
+        ],
 
         'urlManager' => [
             'enablePrettyUrl' => true,
