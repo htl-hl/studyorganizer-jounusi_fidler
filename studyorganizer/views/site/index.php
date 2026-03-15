@@ -1,5 +1,6 @@
 <?php
-
+// in folgendem Code wurden alle gehardcodeten Texte mit dem Übersetzer Yii::t ersetzt
+// da es sehr viel aufwand gewesen wäre, führte diese Arbeit der Chattler durch
 /** @var yii\web\View $this */
 
 use yii\helpers\Html;
@@ -11,9 +12,9 @@ $this->title = 'StudyOrganizer';
     <?php if (Yii::$app->user->isGuest): ?>
         <?php // Wenn nicht eingeloggt: Willkommensseite (von Jounusi) ?>
         <div class="jumbotron text-center bg-transparent mt-5 mb-5">
-            <h1 class="display-4">Willkommen bei StudyOrganizer!</h1>
-            <p class="lead">Organisiere deine Aufgaben und Fächer effizient.</p>
-            <p><?= Html::a('Jetzt starten', ['/site/login'], ['class' => 'btn btn-lg', 'style' => 'background-color: #1E90FF; color: white;']) ?></p>
+            <h1 class="display-4"><?= Yii::t('app', 'Welcome to StudyOrganizer!') ?></h1>
+            <p class="lead"><?= Yii::t('app', 'Organize your tasks and subjects efficiently.') ?></p>
+            <p><?= Html::a(Yii::t('app', 'Get started'), ['/site/login'], ['class' => 'btn btn-lg', 'style' => 'background-color: #1E90FF; color: white;']) ?></p>
         </div>
     <?php endif; ?>
 
@@ -22,27 +23,27 @@ $this->title = 'StudyOrganizer';
             <?php if (Yii::$app->user->identity->isAdmin()): ?>
                 <!-- Admin Dashboard -->
                 <div class="alert alert-info mt-3">
-                    <strong>Admin-Bereich</strong> - Du hast vollständigen Zugriff auf alle Funktionen.
+                    <strong><?= Yii::t('app', 'Admin area') ?></strong> - <?= Yii::t('app', 'You have full access to all functions.') ?>
                 </div>
                 <div class="row mt-4">
                     <div class="col-md-4 mb-3">
-                        <?= Html::a('<h4>Fächer verwalten</h4><p>Fächer anlegen und bearbeiten</p>', ['fach/index'], ['class' => 'btn btn-outline-primary w-100 p-4 text-start']) ?>
+                        <?= Html::a('<h4>' . Yii::t('app', 'Manage subjects') . '</h4><p>' . Yii::t('app', 'Create and edit subjects') . '</p>', ['fach/index'], ['class' => 'btn btn-outline-primary w-100 p-4 text-start']) ?>
                     </div>
                     <div class="col-md-4 mb-3">
-                        <?= Html::a('<h4>Lehrer verwalten</h4><p>Lehrer anlegen und zuordnen</p>', ['lehrer/index'], ['class' => 'btn btn-outline-primary w-100 p-4 text-start']) ?>
+                        <?= Html::a('<h4>' . Yii::t('app', 'Manage teachers') . '</h4><p>' . Yii::t('app', 'Create and assign teachers') . '</p>', ['lehrer/index'], ['class' => 'btn btn-outline-primary w-100 p-4 text-start']) ?>
                     </div>
                     <div class="col-md-4 mb-3">
-                        <?= Html::a('<h4>Alle Aufgaben</h4><p>Übersicht über alle Aufgaben</p>', ['aufgabe/index'], ['class' => 'btn btn-outline-primary w-100 p-4 text-start']) ?>
+                        <?= Html::a('<h4>' . Yii::t('app', 'All tasks') . '</h4><p>' . Yii::t('app', 'Overview of all tasks') . '</p>', ['aufgabe/index'], ['class' => 'btn btn-outline-primary w-100 p-4 text-start']) ?>
                     </div>
                 </div>
             <?php else: ?>
                 <!-- User Dashboard -->
                 <div class="row mt-4">
                     <div class="col-md-6 mb-3">
-                        <?= Html::a('<h4>Meine Aufgaben</h4><p>Aufgaben anzeigen und bearbeiten</p>', ['aufgabe/index'], ['class' => 'btn btn-outline-primary w-100 p-4 text-start']) ?>
+                        <?= Html::a('<h4>' . Yii::t('app', 'My tasks') . '</h4><p>' . Yii::t('app', 'View and edit tasks') . '</p>', ['aufgabe/index'], ['class' => 'btn btn-outline-primary w-100 p-4 text-start']) ?>
                     </div>
                     <div class="col-md-6 mb-3">
-                        <?= Html::a('<h4>Neue Aufgabe</h4><p>Neue Aufgabe erstellen</p>', ['aufgabe/create'], ['class' => 'btn btn-primary w-100 p-4 text-start', 'style' => 'background-color: #1E90FF; border: none;']) ?>
+                        <?= Html::a('<h4>' . Yii::t('app', 'New task') . '</h4><p>' . Yii::t('app', 'Create a new task') . '</p>', ['aufgabe/create'], ['class' => 'btn btn-outline-primary w-100 p-4 text-start']) ?>
                     </div>
                 </div>
             <?php endif; ?>

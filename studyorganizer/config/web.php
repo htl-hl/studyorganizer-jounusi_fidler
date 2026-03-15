@@ -6,7 +6,19 @@ $db = require __DIR__ . '/db.php';
 $config = [
     'id' => 'basic',
     'basePath' => dirname(__DIR__),
+    'language' => 'en',
     'bootstrap' => ['log'],
+    'on beforeRequest' => function ($event) { //bei jedem "Seitenwechsel" oder "Neuladung" passiert:
+        $session = Yii::$app->session;
+        $session->open();
+        $lang = Yii::$app->request->get('lang');
+        if ($lang && in_array($lang, ['de', 'en'])) { //speichert die Sprache wenns in der url ist
+            $session->set('language', $lang);
+            Yii::$app->language = $lang;
+        } elseif ($session->has('language')) { // sonst aus Session laden
+            Yii::$app->language = $session->get('language');
+        }
+    },
     'aliases' => [
         '@bower' => '@vendor/bower-asset',
         '@npm'   => '@vendor/npm-asset',
@@ -46,6 +58,16 @@ $config = [
             ],
         ],
         'db' => $db,
+
+        'i18n' => [ // der Block macht Übersetzungen, genauso wie Yii::t
+            'translations' => [
+                'app*' => [
+                    'class' => 'yii\i18n\PhpMessageSource',
+                    'basePath' => '@app/messages', // Ordner: studyorganizer/messages/ de oder eng
+                    'sourceLanguage' => 'en', // Standard, das passt so
+                ],
+            ],
+        ],
 
         'urlManager' => [
             'enablePrettyUrl' => true,
