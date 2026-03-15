@@ -1,7 +1,6 @@
 <?php
 return [
-    'Home' => 'Start',
-    'About' => 'Über uns',
+    'Home' => 'Main',
     'Contact' => 'Kontakt',
     'Login' => 'Anmelden',
     'Logout' => 'Abmelden',

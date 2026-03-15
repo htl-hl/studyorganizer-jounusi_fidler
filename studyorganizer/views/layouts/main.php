@@ -72,8 +72,7 @@ $this->registerLinkTag(['rel' => 'icon', 'type' => 'image/png', 'href' => Yii::g
         echo Nav::widget([
                 'options' => ['class' => 'navbar-nav me-auto'],
                 'items' => [
-                        ['label' => 'Home', 'url' => ['/site/index']],
-                        ['label' => 'About', 'url' => ['/site/about']],
+                        ['label' => 'Main', 'url' => ['/site/index']],
                         ['label' => 'Contact', 'url' => ['/site/contact']],
                 ],
         ]);
